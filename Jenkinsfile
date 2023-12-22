@@ -3,7 +3,7 @@ def COLOR_MAP = [
   'FAILURE': 'danger',
 ]
 
-piepline {
+pipeline {
   agent any
   
   tools {
