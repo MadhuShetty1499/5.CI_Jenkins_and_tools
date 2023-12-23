@@ -69,16 +69,16 @@ Continuous Integration with Jenkins and tools
 
   #### Create Security group:
   - Go to AWS Ec2 => Security group:
-    a. Jenkins SG => Inbound rules => Allow port 8080 from anywhere and port 22 from my Ip.
-    b. Nexus SG => Inbound rules => Allow ports 22 and 8081 from my Ip and also port 8081 from Jenkins SG.
-    c. Sonarqube SG => Inbound rules => Allow ports 22 and 80 from my Ip and also port 80 from Jenkins SG.
+    - Jenkins SG => Inbound rules => Allow port 8080 from anywhere and port 22 from my Ip.
+    - Nexus SG => Inbound rules => Allow ports 22 and 8081 from my Ip and also port 8081 from Jenkins SG.
+    - Sonarqube SG => Inbound rules => Allow ports 22 and 80 from my Ip and also port 80 from Jenkins SG.
   ![Security group](https://github.com/MadhuShetty1499/5.CI_Jenkins_and_tools/blob/main/images/securitygrp.png)
   
   #### Launch EC2 instances with user data:
   - Go to AWS EC2 => instance => launch instance:
-    a. Jenkins => AMI Ubuntu22(free tier) => t2.small => select key pair => Jenkins SG => Advanced settings => user data ([Jenkins](https://github.com/MadhuShetty1499/5.CI_Jenkins_and_tools/blob/main/userdata/jenkins-setup.sh)) => launch.
-    b. Nexus => AMI CentOS 9(free tier) => t2.medium => select key pair => Nexus SG => Advanced settings => user data ([Nexus](https://github.com/MadhuShetty1499/5.CI_Jenkins_and_tools/blob/main/userdata/nexus-setup.sh)) => launch.
-    c. Sonarqube => AMI Ubuntu22(free tier) => t2.medium => select key pair => Sonarqube SG => Advanced settings => user data ([Sonarqube](https://github.com/MadhuShetty1499/5.CI_Jenkins_and_tools/blob/main/userdata/sonar-setup.sh)) => launch.
+    - Jenkins => AMI Ubuntu22(free tier) => t2.small => select key pair => Jenkins SG => Advanced settings => user data ([Jenkins](https://github.com/MadhuShetty1499/5.CI_Jenkins_and_tools/blob/main/userdata/jenkins-setup.sh)) => launch.
+    - Nexus => AMI CentOS 9(free tier) => t2.medium => select key pair => Nexus SG => Advanced settings => user data ([Nexus](https://github.com/MadhuShetty1499/5.CI_Jenkins_and_tools/blob/main/userdata/nexus-setup.sh)) => launch.
+    - Sonarqube => AMI Ubuntu22(free tier) => t2.medium => select key pair => Sonarqube SG => Advanced settings => user data ([Sonarqube](https://github.com/MadhuShetty1499/5.CI_Jenkins_and_tools/blob/main/userdata/sonar-setup.sh)) => launch.
   - Wait for about 10 minutes to bring up instances and provisioning services.
   ![EC2](https://github.com/MadhuShetty1499/5.CI_Jenkins_and_tools/blob/main/images/ec2.png)
 
