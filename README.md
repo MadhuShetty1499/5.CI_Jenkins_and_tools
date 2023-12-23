@@ -35,8 +35,8 @@ Continuous Integration with Jenkins and tools
   7. Sonarqube - Code analysis server
   8. AWS EC2 - Compute resource
 
-### Architecture
-  ![Architecture]()---------------------------------------------------------------
+### Flow chart
+  ![Flow chart]()---------------------------------------------------------------
 
 ### Steps:
   1. Login to AWS account.
@@ -90,13 +90,14 @@ Continuous Integration with Jenkins and tools
 
   #### Jenkins setup:
   - Copy the public Ip of the Jenkins EC2 instance and paste it into the browser followed by the colon and its port number. $`<PublicIp>:8080`
-  - For the password, copy the path shown on the login screen => Get it in Jenkin's instance $`sudo cat <PATH>` => paste it into login page => select install suggested plugins => create user (Make sure to remember the password when you create the user).
+  - For the password, copy the path shown on the login screen => Get it in Jenkin's instance $`sudo cat /var/lib/jenkins/secrets/initialAdminPassword` => paste it into login page => select install suggested plugins => create user (Make sure to remember the password when you create the user).
   - Install Plugin => Go to manage => plugins => available plugins => select Maven integration, Github integration, Nexus artifact uploader, Sonarqube scanner, Slack notification and Build timestamp => install without restart.
+  ![Plugins]()-------------------------------------------------------------------------
 
   #### Nexus setup:
   - Copy the public Ip of the Nexus EC2 instance and paste it into the browser followed by the colon and its port number. $`<PublicIp>:8081`
-  - Sign in (User - admin) => For the password, copy the path shown on the login screen => Get it in Nexus's instance $`sudo cat <PATH>` => paste it into login page=> set new password (Make sure to remember/save) => disable anonymous access.
-  - Create repo:
+  - Sign in (User - admin) => For the password, copy the path shown on the login screen => Get it in Nexus's instance $`sudo cat /opt/nexus/sonatype-work/nexus3/admin.password` => paste it into login page=> set new password (Make sure to remember/save) => disable anonymous access.
+  - Go to server admin => repositories => Create repo:
     a. maven2(hosted) => vprofile-release (To store artifact) => create.
     b. maven2(proxy) => vpro-maven-central (To download dependencies from maven) => url `https://repo1.maven.org/maven2/` => create.
     c. maven2(hosted) => vprofile-snapshot (For snapshot) => version policy - Snapshot => create.
@@ -119,18 +120,18 @@ Continuous Integration with Jenkins and tools
 
   #### Build job with Nexus Integration:
   - In Jenkins => manage => tools => add JDK => uncheck install automatically:
-    a. OracleJDK11 => add its path `/usr/lib/jvm` which is in Jenkin's server.
-    b. OracleJDK8 => add its path `/usr/lib/jvm`. If there is no JDK8 installed in Jenkin's server, install it $`sudo apt update && apt install openjdk-8-jdk -y` and update its path.
+    a. OracleJDK11 => add its path `/usr/lib/jvm/java-1.11.0-openjdk-amd64` which is in Jenkin's server.
+    b. OracleJDK8 => add its path `/usr/lib/jvm/java-1.8.0-openjdk-amd64`. If there is no JDK8 installed in Jenkin's server, install it $`sudo apt update && sudo apt install openjdk-8-jdk -y` and update its path.
   - Also, add Maven => MAVEN3 => install automatically => latest version 3 => save.
   - Go to manage => credentials => system => global => add => username and password of Nexus => ID - nexuslogin => save
   - In VS code => ci-jenkins branch => Jenkinsfile => write the pipeline as in <PATH>.
   - Commit and push to Github.
   - Create a job in Jenkins => pipeline => select pipeline from SCM => add Github repo URL => add credentials => SSH => username - git => ID - githublogin => Copy private key from gitbash $`cat ~/.ssh/id_rsa` => paste => add => select credential => its displays error => login to Jenkins server => switch to root user => switch to jenkins user => $`git ls-remote -h <Github repo URL> HEAD` (It stores the identity and next time when you login it won't ask yes/no prompt) => now in Jenkins change the credentials and once again select back the git credential and the error is sorted out => branch */ci-jenkins => file - Jenkinsfile => save and build.
-  Note: If the job fails due to invalid variables, go to settings.xml and pom.xml and change the variables with underscore instead of hyphen (because, Jenkins doesn't support hyphen), commit, push and build it.
+  Note: If the job fails due to invalid variables, go to settings.xml and pom.xml and change the variables with underscore instead of hyphen (because, Jenkins doesn't support hyphens used in variables), commit, push and build it.
 
-  #### Github web hook (Whenever there is a commit, build automatically triggers.):
+  #### Github web hook (Whenever there is a commit, build automatically triggers):
   - Check if Jenkins Security group is allowing port 8080 from anywhere. Because Github webhook triggers Jenkins build when there is a commit. Git is outside our network, so the connection is to be allowed from anywhere.
-  - In Github => repo settings => webhook => add => url - `http://<privIp of jenkins>:8080/github-webhook/` => content type - Json => add => check in recent deliveries => make sure it has green checkmark if it is properly done.
+  - In Github => repo settings => webhook => add => url - `http://<PubIp of jenkins>:8080/github-webhook/` => content type - Json => add => check in recent deliveries => make sure it has green checkmark if it is properly done.
   - In Jenkins job => configure => triggers => check Github webhook trigger => save.
   - Check the webhook trigger by adding additional stages in Jenkinsfile from <PATH>.
   - Commit and push the changes and the jobs get triggered automatically.
@@ -154,8 +155,8 @@ Continuous Integration with Jenkins and tools
   - Commit and push. Check the artifact in the Nexus repo.
 
   #### Slack notification:
-  - In browser search login slack => create workspace - vprofilecicd => work - devopscicd => skip the add members step => you can install app or continue in browser => add channel => Jenkinscicd => save.
-  - In browser search add apps to slack => search JenkinsCI => add => choose channel Jenkinscicd => add => jenkins integration => copy the token => save.
+  - In the browser search login slack => create workspace - vprofilecicd => work - devopscicd => skip the add members step => you can install app or continue in browser => add channel => Jenkinscicd => save.
+  - In browser search add apps to slack => search Jenkins CI => add => choose channel Jenkinscicd => add => jenkins integration => copy the token => save.
   - In Jenkins => manage => configure => slack => workspace - vprofilecicd => credential => secret text => paste the token => ID - slacktoken => channel - #jenkinscicd => test connection (if it fails, then re do the steps once again) => save.
   - Add Color map variable at top outside of pipeline and post stage at bottom of pipeline which is in <PATH>.
   - Commit and push. Check the notification in the slack. If the build fails, the notification appears red or else green.
@@ -163,4 +164,3 @@ Continuous Integration with Jenkins and tools
 
 ### Credits:
   - https://github.com/hkhcoder/vprofile-project
-
