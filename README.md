@@ -1,5 +1,5 @@
-# 5.CI_Jenkins_and_tools
-Continuous Integration with Jenkins and tools
+# Project-5: Continuous Integration with Jenkins and other tools
+This project establishes an automated Continuous Integration (CI) pipeline using Jenkins, Git, Maven, Checkstyle, Slack, Nexus, Sonarqube, and AWS EC2. Developers' code commits trigger the pipeline, automating build, testing, and deployment processes. It ensures early bug detection, code quality maintenance, and swift issue resolution. Real-time Slack notifications keep stakeholders informed. The goal is to create an agile, efficient development cycle, fostering quicker iterations and high-quality software delivery.
 
 ### Scenario:
   - Agile SDLC.
